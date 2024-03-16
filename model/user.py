@@ -28,7 +28,7 @@ class Goods(Base):
     id = Column(Integer, primary_key=True, autoincrement=True, comment='主键')  # 主键
     name = Column(VARCHAR(32), nullable=False, comment='商品名称')  # 产品名称
     price = Column(Integer, nullable=False, comment="商品价格")  # 商品价格
-    image_src = Column(VARCHAR(100), nullable=False, unique=True, comment='商品图片路径')  # 商品图片路径，非空，图片存放在服务器端，也就是后端电脑中
+    image_src = Column(VARCHAR(300), nullable=False, unique=True, comment='商品图片路径')  # 商品图片路径，非空，图片存放在服务器端，也就是后端电脑中
     check_status = Column(Integer, nullable=False, comment='审核状态')  # 审核状态 非空
 
 
@@ -48,7 +48,7 @@ class Order(Base):
 class Session(Base):
     __tablename__ = 'session'
     id = Column(Integer, primary_key=True, comment="主键")
-    user_id = Column(Integer, nullable=False, unique=True, comment="用户id")  # 用户ID，用于关联用户信息
+    user_id = Column(Integer, nullable=False, unique=False, comment="用户id")  # 用户ID，用于关联用户信息
     token = Column(VARCHAR(128), nullable=False, unique=True)  # 会话令牌，用于识别会话
     created_at = Column(DateTime, default=datetime.now)  # 会话创建时间
     # 其他可能需要存储的会话信息，如过期时间、用户代理等
