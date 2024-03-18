@@ -1,9 +1,9 @@
 import functools
 from datetime import datetime
-from typing import Callable
+from typing import Callable, List
 
 from starlette.responses import JSONResponse
-
+from type.page import page,pageResult
 from utils.times import getMsTime
 
 
@@ -21,3 +21,9 @@ def standard_response(func: Callable):
     return decorator
 
 
+def makePageResult(pg: page, tn: int, data: List):  # 处理分页数据
+    return pageResult(
+        totalNum=tn,
+        totalPage=(tn + pg.pageSize - 1) // pg.pageSize,
+        rows=data
+    ).model_dump()

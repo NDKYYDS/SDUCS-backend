@@ -1,11 +1,15 @@
 from sqlalchemy import create_engine
 
 from const import SQLALCHEMY_DATABASE_URL_MASTER
-from model.user import User
+from model.user import User, Goods, Order, Session
+
 # 这里需要引入所有使用 Base 的 Model
 
 create_table_list = [
-    User
+    User,
+    Goods,
+    Order,
+    Session
 ]
 
 
