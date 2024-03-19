@@ -3,10 +3,10 @@ import hashlib
 from fastapi import HTTPException, Response
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import func, join, update, desc
-import model.table
+import model.user
 from model.db import dbSession, dbSessionread
-from model.table import User
-from model.table import Session as se
+from model.user import User
+from model.user import Session as se
 from type.user import login_interface, login_info
 
 

@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 
 from const import SQLALCHEMY_DATABASE_URL_MASTER
-from model.table import User, Goods, Order, Session
+from model.user import User, Goods, Order, Session
 
 # 这里需要引入所有使用 Base 的 Model
 
