@@ -7,7 +7,7 @@ from fastapi import HTTPException, Response, UploadFile
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import func, join, update, desc
 from model.db import dbSession, dbSessionread
-from model.user import Goods
+from model.table import Goods
 from type.goods import goods_register, goods_opt
 from datetime import datetime
 from type.page import page, dealDataList
