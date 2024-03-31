@@ -1,1 +1,1 @@
-SQLALCHEMY_DATABASE_URL_MASTER = "mysql+pymysql://root:123456@localhost:3306/sducs"
+SQLALCHEMY_DATABASE_URL_MASTER = "mysql+pymysql://root:wwdx@localhost:3306/sducs"
