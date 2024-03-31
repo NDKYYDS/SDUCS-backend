@@ -26,7 +26,7 @@ def save_uploaded_images(files: List[UploadFile], goods_name: str) -> List[str]:
 
 
 class GoodsModel(dbSession, dbSessionread):
-    def add_goods(self, obj: goods_register, file: List[UploadFile]):
+    def add_goods(self, obj: goods_register, file: List[UploadFile], user: int):
         obj_dict = jsonable_encoder(obj)
         obj_add = Goods(**obj_dict)
         image_paths = save_uploaded_images(file, obj.name + str(getMsTime(datetime.now())))
@@ -34,6 +34,7 @@ class GoodsModel(dbSession, dbSessionread):
         print(obj_add.image_src)
         print(image_paths)
         obj_add.check_status = 0
+        obj_add.user_id = user
         with self.get_db() as session:
             obj_add.is_delete = 0
             session.add(obj_add)
@@ -42,7 +43,7 @@ class GoodsModel(dbSession, dbSessionread):
 
     def show_list(self, Page: page):
         with self.get_db() as session:
-            query = session.query(Goods)
+            query = session.query(Goods).filter(Goods.check_status == 1)
             total_count = query.count()  # 总共
             # 执行分页查询
             data = query.offset(Page.offset()).limit(Page.limit()).all()  # .all()

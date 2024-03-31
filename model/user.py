@@ -26,6 +26,7 @@ class User(Base):  # 用户表
 class Goods(Base):
     __tablename__ = 'goods'
     id = Column(Integer, primary_key=True, autoincrement=True, comment='主键')  # 主键
+    user_id = Column(Integer, nullable=False, comment='商家')  # 主键
     name = Column(VARCHAR(32), nullable=False, comment='商品名称')  # 产品名称
     price = Column(Integer, nullable=False, comment="商品价格")  # 商品价格
     image_src = Column(VARCHAR(300), nullable=False, unique=True, comment='商品图片路径')  # 商品图片路径，非空，图片存放在服务器端，也就是后端电脑中
