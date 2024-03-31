@@ -48,3 +48,11 @@ class UserModel(dbSession, dbSessionread):
                 session.commit()
             # response.set_cookie(key="user", value=token_current)
             return token_current
+
+    def get_user_by_token(self, token: str):
+        with self.get_db() as session:
+            use = session.query(se).filter(se.token == token).first()
+            if session is None:
+                return 0
+            else:
+                return use.user_id
