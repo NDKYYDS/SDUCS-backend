@@ -16,9 +16,12 @@ goods_service = GoodsModel()
 
 @goods_router.post("/")
 @standard_response
-async def create_project(request: Request, file: List[UploadFile], user=Depends(auth_login)) -> int:
+async def create_project(request: Request, file: List[UploadFile], origin: str = Query(), description: str = Query(),
+                         user=Depends(auth_login)) -> int:
     goods = goods_register(name=request.headers['name'],
-                           price=int(request.headers['price']))
+                           price=int(request.headers['price']),
+                           origin=origin,
+                           description=description)
     results = goods_service.add_goods(obj=goods, file=file, user=user)
     return results
 
@@ -26,12 +29,8 @@ async def create_project(request: Request, file: List[UploadFile], user=Depends(
 @goods_router.get("/list")
 @standard_response
 async def show_goods_list(request: Request, pageNow: int = Query(description="页码", gt=0),
-                          pageSize: int = Query(description="每页数量", gt=0), user=Depends(auth_login)):
+                          pageSize: int = Query(description="每页数量", gt=0), name: str = Query(default=None),
+                          user=Depends(auth_login)):
     Page = page(pageNow=pageNow, pageSize=pageSize)
-    tn, res = goods_service.show_list(Page=Page)
+    tn, res = goods_service.show_list(Page=Page, name=name)
     return makePageResult(pg=Page, tn=tn, data=res)
-
-
-
-
-

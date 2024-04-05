@@ -55,9 +55,11 @@ class GoodsModel(dbSession, dbSessionread):
             session.commit()
             return obj_add.id
 
-    def show_list(self, Page: page):
+    def show_list(self, name: str, Page: page):
         with self.get_db() as session:
             query = session.query(Goods).filter(Goods.check_status == 0)
+            if name:
+                query = query.filter(Goods.name.like(f"%{name}%"))
             total_count = query.count()  # 总共
             # 执行分页查询
             data = query.offset(Page.offset()).limit(Page.limit()).all()  # .all()
