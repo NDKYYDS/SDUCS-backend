@@ -1,3 +1,4 @@
+import os
 from typing import Optional, List
 
 from fastapi import APIRouter, Depends, Query, Request, HTTPException, Response, \
@@ -5,6 +6,7 @@ from fastapi import APIRouter, Depends, Query, Request, HTTPException, Response,
 from service.goods import GoodsModel
 from utils.response import standard_response, makePageResult
 from utils.auther_login import auth_login
+from fastapi.responses import FileResponse
 from type.goods import goods_register
 from type.page import page
 
@@ -28,3 +30,8 @@ async def show_goods_list(request: Request, pageNow: int = Query(description="é¡
     Page = page(pageNow=pageNow, pageSize=pageSize)
     tn, res = goods_service.show_list(Page=Page)
     return makePageResult(pg=Page, tn=tn, data=res)
+
+
+
+
+
