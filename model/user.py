@@ -30,7 +30,8 @@ class Goods(Base):
     name = Column(VARCHAR(32), nullable=False, comment='商品名称')  # 产品名称
     price = Column(Integer, nullable=False, comment="商品价格")  # 商品价格
     image_src = Column(VARCHAR(300), nullable=False, unique=True, comment='商品图片路径')  # 商品图片路径，非空，图片存放在服务器端，也就是后端电脑中
-
+    origin = Column(VARCHAR(64), nullable=False, comment='发货地')
+    description = Column(VARCHAR(64), nullable=False, comment='商品描述')
     check_status = Column(Integer, nullable=False, comment='审核状态')  # 审核状态 非空
 
 
@@ -39,9 +40,7 @@ class Order(Base):
     id = Column(Integer, primary_key=True, autoincrement=True, comment='主键')  # 主键
     user_id = Column(Integer, comment='用户ID')  # 用户ID
     good_id = Column(Integer, comment='商品ID')  # 商品ID
-    shipping_status = Column(Integer, nullable=False, comment='发货状态')  # 商品的发货状态  0表示未发货，1表示发货
-    delivery_status = Column(Integer, nullable=False, comment='收货状态')  # 商品的收货状态，0表示未收货，1表示收货。
-    transaction_status = Column(Integer, nullable=False, comment="交易状态")  # 0交易中，1交易成功，2交易失败
+    shipping_status = Column(Integer, nullable=False, comment='发货状态')  # 商品的发货状态  0表示未发货，1表示发货, 2收货
     count = Column(Integer, nullable=False, comment="交易数量")
     origin = Column(VARCHAR(64), nullable=False, comment='发货地')
     destination = Column(VARCHAR(64), nullable=False, comment='收货地')

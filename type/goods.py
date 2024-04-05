@@ -8,6 +8,8 @@ from utils.times import getMsTime
 class goods_register(BaseModel):
     name: str
     price: int
+    origin: str
+    description: str
 
 
 class goods_opt(BaseModel):
@@ -17,6 +19,7 @@ class goods_opt(BaseModel):
     )
     id: int
     name: str
+    user_id: int
     price: int
     image_src: str
     check_status: int

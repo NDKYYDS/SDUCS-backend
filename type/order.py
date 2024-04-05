@@ -9,8 +9,14 @@ class order_add(BaseModel):
     user_id: int = None
     good_id: int
     shipping_status: int = 0
-    delivery_status: int = 0
-    transaction_status: int = 0
     count: int
     origin: str
     destination: str
+
+
+class order_opt(order_add):
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        from_attributes=True,
+    )
+    id: int
