@@ -38,13 +38,23 @@ async def show_goods_list(request: Request, pageNow: int = Query(description="�
     return makePageResult(pg=Page, tn=tn, data=res)
 
 
-@goods_router.put("/status/{good_id}")
+@goods_router.put("/status")
 @standard_response
-async def set_goods_status(request: Request, good_id: int, old_status: int, new_status: int,
-                           user=Depends(auth_login)):  # ,user=Depends(auth_login)):
+async def set_goods_status(request: Request, good_id: int, old_status: int, new_status: int):
+                           # user_id=Depends(auth_login)):  # ,user=Depends(auth_login)):
     status_change = Goods_Status_Change(old_status, new_status)
-    # user = 1
-    if user_service.is_admin(user):
+    user_id = 1
+    if user_service.is_admin(user_id):
         return goods_service.change_check_status(good_id, status_change)
     else:
         raise HTTPException(status_code=403, detail="Forbidden: You are not an admin")
+
+
+@goods_router.delete("/delete")
+@standard_response
+async def delete_goods(request: Request, good_id: int,user_id:int): # , user_id=Depends(auth_login)):
+    # user_id = 3
+    return goods_service.delete_good(good_id, user_id)
+# 403   没权限
+# 404   没有商品
+# 422   商品信息错误

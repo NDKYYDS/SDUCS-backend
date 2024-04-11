@@ -60,4 +60,6 @@ class UserModel(dbSession, dbSessionread):
     def is_admin(self, userid):
         with self.get_db() as session:
             theUser = session.query(User).filter(User.id == userid).first()
+            if theUser is None:
+                return 0
             return theUser.role == 2

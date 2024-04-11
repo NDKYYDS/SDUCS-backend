@@ -8,12 +8,13 @@ from fastapi import HTTPException, Response, UploadFile
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import func, join, update, desc
 from model.db import dbSession, dbSessionread
-from model.user import Goods,User
-from type.goods import goods_register, goods_opt,Goods_Status_Change
+from model.user import Goods, User
+from type.goods import goods_register, goods_opt, Goods_Status_Change
 from datetime import datetime
 from type.page import page, dealDataList
-
-
+from sqlalchemy.exc import SQLAlchemyError
+from service.user import UserModel
+user_service = UserModel()
 def save_upload_files(files: list):
     uploaded_file_paths = []
     upload_folder = "uploads"
@@ -34,7 +35,7 @@ def save_upload_files(files: list):
 
 
 class GoodsModel(dbSession, dbSessionread):
-    def add_goods(self, obj: goods_register, file: List[UploadFile], user: int): # [http:..，http：..]
+    def add_goods(self, obj: goods_register, file: List[UploadFile], user: int):  # [http:..，http：..]
         obj_dict = jsonable_encoder(obj)
         obj_add = Goods(**obj_dict)
         image_paths = save_upload_files(file)
@@ -71,7 +72,7 @@ class GoodsModel(dbSession, dbSessionread):
         with self.get_db() as session:
             theGood = session.query(Goods).filter(Goods.id == good_id).first()
             if theGood is None:
-                return "No this good"
+                raise HTTPException(status_code=404, detail="there is no the good")
             if theGood.check_status == status_change.old_status:
                 # theGood.status = goods_status_change.new_status
                 session.query(Goods).filter(Goods.id == good_id).update(
@@ -79,7 +80,24 @@ class GoodsModel(dbSession, dbSessionread):
                 session.commit()
                 return "OK"
             else:
-                return "Failure"
+                raise HTTPException(status_code=422, detail="Unprocessable Entity")
 
+    def delete_good(self, good_id, user_id):
+        with self.get_db() as session:
+            theGood = session.query(Goods).filter(Goods.id == good_id).first()
+            if theGood is None:
+                raise HTTPException(status_code=404, detail="NoGood")
+            try:
+                theGood = session.query(Goods).filter(Goods.id == good_id).first()
+                if theGood.user_id == user_id or user_service.is_admin(user_id):
+                    session.query(Goods).filter(Goods.id == good_id).delete()
+                    session.commit()
+                else:
+                    raise HTTPException(status_code=403, detail="NoPermission")
+                return "OK"
+            except SQLAlchemyError as e:
+                session.rollback()  # 回滚事务
+                error_msg = f"An error occurred: {str(e)}"
+                return error_msg
 
 
