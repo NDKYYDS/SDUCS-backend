@@ -15,6 +15,7 @@ goods_router = APIRouter()
 goods_service = GoodsModel()
 user_service = UserModel()
 
+
 @goods_router.post("/")
 @standard_response
 async def create_project(request: Request, file: List[UploadFile], origin: str = Query(), description: str = Query(),
@@ -39,10 +40,11 @@ async def show_goods_list(request: Request, pageNow: int = Query(description="é¡
 
 @goods_router.put("/status/{good_id}")
 @standard_response
-async def set_goods_status(request: Request, good_id: int,old_status:int,new_status:int): # user=Depends(auth_login)):
-    status_change =Goods_Status_Change(old_status, new_status)
-    user = 1
-    if user_service.is_admin(user) :
+async def set_goods_status(request: Request, good_id: int, old_status: int, new_status: int,
+                           user=Depends(auth_login)):  # ,user=Depends(auth_login)):
+    status_change = Goods_Status_Change(old_status, new_status)
+    # user = 1
+    if user_service.is_admin(user):
         return goods_service.change_check_status(good_id, status_change)
     else:
         raise HTTPException(status_code=403, detail="Forbidden: You are not an admin")
