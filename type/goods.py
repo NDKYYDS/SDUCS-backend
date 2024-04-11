@@ -1,5 +1,5 @@
 from fastapi import UploadFile
-from pydantic import BaseModel, ConfigDict, field_serializer, Field
+from pydantic import BaseModel, ConfigDict, Field
 from typing import List, Optional
 from datetime import datetime
 from utils.times import getMsTime
@@ -23,3 +23,11 @@ class goods_opt(BaseModel):
     price: int
     image_src: str
     check_status: int
+
+
+class Goods_Status_Change():
+    def __init__(self,old,new):
+        self.old_status=old
+        self.new_status=new
+    old_status: int
+    new_status: int

@@ -8,8 +8,8 @@ from fastapi import HTTPException, Response, UploadFile
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import func, join, update, desc
 from model.db import dbSession, dbSessionread
-from model.user import Goods
-from type.goods import goods_register, goods_opt
+from model.user import Goods,User
+from type.goods import goods_register, goods_opt,Goods_Status_Change
 from datetime import datetime
 from type.page import page, dealDataList
 
@@ -34,7 +34,7 @@ def save_upload_files(files: list):
 
 
 class GoodsModel(dbSession, dbSessionread):
-    def add_goods(self, obj: goods_register, file: List[UploadFile], user: int):
+    def add_goods(self, obj: goods_register, file: List[UploadFile], user: int): # [http:..，http：..]
         obj_dict = jsonable_encoder(obj)
         obj_add = Goods(**obj_dict)
         image_paths = save_upload_files(file)
@@ -66,3 +66,20 @@ class GoodsModel(dbSession, dbSessionread):
             print(type(data))
             data = dealDataList(data, goods_opt, {"is_check"})
             return total_count, data
+
+    def change_check_status(self, good_id, status_change: Goods_Status_Change):
+        with self.get_db() as session:
+            theGood = session.query(Goods).filter(Goods.id == good_id).first()
+            if theGood is None:
+                return "No this good"
+            if theGood.check_status == status_change.old_status:
+                # theGood.status = goods_status_change.new_status
+                session.query(Goods).filter(Goods.id == good_id).update(
+                    {'check_status': status_change.new_status})
+                session.commit()
+                return "OK"
+            else:
+                return "Failure"
+
+
+
