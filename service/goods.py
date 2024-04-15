@@ -14,7 +14,10 @@ from datetime import datetime
 from type.page import page, dealDataList
 from sqlalchemy.exc import SQLAlchemyError
 from service.user import UserModel
+
 user_service = UserModel()
+
+
 def save_upload_files(files: list):
     uploaded_file_paths = []
     upload_folder = "uploads"
@@ -68,11 +71,24 @@ class GoodsModel(dbSession, dbSessionread):
             data = dealDataList(data, goods_opt, {"is_check"})
             return total_count, data
 
+    # user_id  show list
+    def show_list_userid(self, user_id: int, check_all: bool, Page: page):
+        with self.get_db() as session:
+            query = session.query(Goods).filter(Goods.check_status == 0)  # !!!! change
+            if check_all == 0:
+                query = query.filter(Goods.user_id == user_id)
+            total_count = query.count()  # 总共
+            # 执行分页查询
+            data = query.offset(Page.offset()).limit(Page.limit()).all()  # .all()
+            print(type(data))
+            data = dealDataList(data, goods_opt, {"is_check"})
+            return total_count, data
+
     def change_check_status(self, good_id, status_change: Goods_Status_Change):
         with self.get_db() as session:
             theGood = session.query(Goods).filter(Goods.id == good_id).first()
             if theGood is None:
-                raise HTTPException(status_code=404, detail="there is no the good")
+                raise HTTPException(status_code=404, detail="NoGood")
             if theGood.check_status == status_change.old_status:
                 # theGood.status = goods_status_change.new_status
                 session.query(Goods).filter(Goods.id == good_id).update(
@@ -100,4 +116,12 @@ class GoodsModel(dbSession, dbSessionread):
                 error_msg = f"An error occurred: {str(e)}"
                 return error_msg
 
-
+    def get_good_detail(self, good_id):
+        with self.get_db() as session:
+            theGood = session.query(Goods).filter(Goods.id == good_id).first()
+            if theGood is None:
+                raise HTTPException(status_code=404, detail="NoGood")
+            else:
+                cgood = goods_opt.model_validate(theGood)
+                cgood = cgood.model_dump()
+                return cgood

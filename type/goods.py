@@ -18,10 +18,12 @@ class goods_opt(BaseModel):
         from_attributes=True,
     )
     id: int
-    name: str
     user_id: int
+    name: str
     price: int
     image_src: str
+    origin: str
+    description: str
     check_status: int
 
 
