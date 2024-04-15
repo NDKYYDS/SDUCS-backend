@@ -38,6 +38,16 @@ async def show_goods_list(request: Request, pageNow: int = Query(description="�
     return makePageResult(pg=Page, tn=tn, data=res)
 
 
+@goods_router.get("/good_list_user")
+@standard_response
+async def good_list_user(request: Request, checkall: bool, user_id=Depends(auth_login),
+                         pageNow: int = Query(description="页码", gt=0),
+                         pageSize: int = Query(description="每页数量", gt=0) ):
+    Page = page(pageNow=pageNow, pageSize=pageSize)
+    tn, res = goods_service.show_list_userid(user_id, checkall, Page)
+    return makePageResult(pg=Page, tn=tn, data=res)
+
+
 @goods_router.put("/status")
 @standard_response
 async def set_goods_status(request: Request, good_id: int, old_status: int, new_status: int,
@@ -53,6 +63,15 @@ async def set_goods_status(request: Request, good_id: int, old_status: int, new_
 @standard_response
 async def delete_goods(request: Request, good_id: int, user_id=Depends(auth_login)):
     return goods_service.delete_good(good_id, user_id)
+
+
 # 403   没权限
 # 404   没有商品
 # 422   商品信息错误
+
+
+@goods_router.get("/good_detail")
+@standard_response
+async def get_goods_detail(request: Request, good_id: int, user_id=Depends(auth_login)):
+    return goods_service.get_good_detail(good_id)
+
