@@ -4,6 +4,7 @@ import shutil
 from typing import List
 
 from sqlalchemy.orm import joinedload
+from sqlalchemy import distinct
 
 from utils.times import getMsTime
 from fastapi import HTTPException, Response, UploadFile
@@ -71,3 +72,31 @@ class OrderModel(dbSession, dbSessionread):
                 {'shipping_status': 2})
             session.commit()
             return "OK"
+
+    # 给userid 查他的去重商品
+    def get_order_by_user_id_distinct(self, state: int, typed: int, name: str, Page: page, user_id: int):
+        with self.get_db() as session:
+            subquery = session.query(Goods).subquery()
+            query = session.query(Order, subquery.c). \
+                outerjoin(subquery,
+                          Order.good_id == subquery.c.id)
+            if typed == 0:
+                query = query.filter(Order.user_id == user_id)
+            else:
+                query = query.filter(subquery.c.user_id == user_id)
+            query = query.filter(Order.shipping_status == state)
+            if name:
+                query = query.filter(subquery.c.name.like(f"%{name}%"))
+            query = query.group_by(Order.good_id,
+                                   Order.id, Order.user_id, Order.good_id, Order.shipping_status, Order.count,
+                                   Order.origin, Order.destination)
+            total_count = query.count()  # 总共
+            # 执行分页查询
+            data = query.offset(Page.offset()).limit(Page.limit()).all()  # .all()
+            listd = []
+            for da in data:
+                corder = order_opt.model_validate(da[0])
+                corder = corder.model_dump()
+                corder['name'] = da[3]
+                listd.append(corder)
+            return total_count, listd

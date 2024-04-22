@@ -32,7 +32,7 @@ class Goods(Base):
     image_src = Column(VARCHAR(300), nullable=False, unique=True, comment='商品图片路径')  # 商品图片路径，非空，图片存放在服务器端，也就是后端电脑中
     origin = Column(VARCHAR(64), nullable=False, comment='发货地')
     description = Column(VARCHAR(64), nullable=False, comment='商品描述')
-    check_status = Column(Integer, nullable=False, comment='审核状态')  # 审核状态 非空
+    check_status = Column(Integer, nullable=False, comment='审核状态')  # 审核状态 非空  0 没审核  1 已通过 2 未通过
 
 
 class Order(Base):

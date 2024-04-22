@@ -61,7 +61,7 @@ class GoodsModel(dbSession, dbSessionread):
 
     def show_list(self, name: str, Page: page):
         with self.get_db() as session:
-            query = session.query(Goods).filter(Goods.check_status == 0)
+            query = session.query(Goods).filter(Goods.check_status == 1)
             if name:
                 query = query.filter(Goods.name.like(f"%{name}%"))
             total_count = query.count()  # 总共
@@ -72,9 +72,13 @@ class GoodsModel(dbSession, dbSessionread):
             return total_count, data
 
     # user_id  show list
-    def show_list_userid(self, user_id: int, check_all: bool, Page: page):
+    def show_list_userid(self, user_id: int, check_all: bool, Page: page, thestatus=-1):
         with self.get_db() as session:
-            query = session.query(Goods).filter(Goods.check_status == 0)  # !!!! change
+            query = None
+            if thestatus == -1: # -1  什么都查 0 未审核 1 通过 2未通过
+                query = session.query(Goods)  # !!!! change
+            else:
+                query = session.query(Goods).filter(Goods.check_status == thestatus)
             if check_all == 0:
                 query = query.filter(Goods.user_id == user_id)
             total_count = query.count()  # 总共
