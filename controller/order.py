@@ -45,3 +45,16 @@ async def create_order(order_id: int = Query(),
                        user=Depends(auth_login)) -> int:
     result = order_server.receive_order_by_id(good_id=order_id, user_id=user)
     return result
+
+
+@order_router.get("/list_distinct")
+@standard_response
+async def create_order(pageNow: int = Query(description="页码", gt=0),
+                       pageSize: int = Query(description="每页数量", gt=0), name: str = Query(default=None),
+                       typed: int = Query(),
+                       state: int = Query(),
+                       user=Depends(auth_login)) -> int:
+    Page = page(pageNow=pageNow, pageSize=pageSize)
+    tn, result = order_server.get_order_by_user_id_distinct(state=state, typed=typed, name=name, Page=Page,
+                                                            user_id=user)
+    return makePageResult(pg=Page, tn=tn, data=result)

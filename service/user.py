@@ -7,7 +7,7 @@ import model.user
 from model.db import dbSession, dbSessionread
 from model.user import User
 from model.user import Session as se
-from type.user import login_interface, login_info
+from type.user import login_interface, login_info, user_opt
 
 
 def hash_password(password: str) -> str:
@@ -63,3 +63,18 @@ class UserModel(dbSession, dbSessionread):
             if theUser is None:
                 return 0
             return theUser.role == 2
+
+    def user_detail(self, userid):
+        with self.get_db() as session:
+
+            theUser = session.query(User).filter(User.id == userid).first()
+            if theUser is None:
+                raise HTTPException(status_code=404, detail="NoUser")
+            else:
+                # theUser.password = str(theUser.password)
+
+                cuser = user_opt.model_validate(theUser)
+                cuser = cuser.model_dump()
+                # print(cuser)
+                # cuser.code = 200
+                return cuser
