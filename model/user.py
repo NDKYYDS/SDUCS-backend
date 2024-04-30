@@ -16,7 +16,7 @@ class User(Base):  # 用户表
     id = Column(Integer, primary_key=True, autoincrement=True, comment='主键')  # 主键
     username = Column(VARCHAR(32), nullable=False, unique=True, comment='用户名')  # 用户名，非空，唯一
     password = Column(VARCHAR(128), nullable=False, comment='密码')  # 密码，非空
-    role = Column(Integer, nullable=False, comment='用户角色')  # 0：买家，1：买家，2：管理员
+    role = Column(Integer, nullable=False, comment='用户角色')  # 0：买家，1：卖家，2：管理员
     phone = Column(VARCHAR(32), nullable=False, comment='电话号码')  # 电话号码，非空
     email = Column(VARCHAR(32), comment='邮箱')  # 邮箱
     gender = Column(Integer, comment='性别')  # 性别
@@ -54,3 +54,10 @@ class Session(Base):
     created_at = Column(DateTime, default=datetime.now)  # 会话创建时间
     # 其他可能需要存储的会话信息，如过期时间、用户代理等
 
+class Comment(Base):
+    __tablename__ = 'comment'
+    id = Column(Integer, primary_key=True, comment="主键")
+    user_id = Column(Integer, nullable=False, unique=False, comment="用户id")  # 用户ID，用于关联用户信息
+    good_id = Column(Integer, comment='商品ID')  # 商品ID
+    comment_str = Column(VARCHAR(256), comment="留言字符串信息")  # 留言字符串信息。
+    check_status = Column(Integer, nullable=False, comment='审核状态')  # 审核状态 非空  0 没审核  1 已通过 2 未通过

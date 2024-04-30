@@ -5,7 +5,7 @@ from fastapi import HTTPException
 from fastapi.exceptions import RequestValidationError
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
-from controller import users,goods,order,uploads
+from controller import users,goods,order,uploads,comment
 # from utils.auth_login import auth_login
 from utils.response import standard_response
 from utils.times import getMsTime
@@ -14,6 +14,7 @@ app = FastAPI()
 app.include_router(users.users_router, prefix="/users")
 app.include_router(goods.goods_router, prefix="/goods")
 app.include_router(order.order_router, prefix="/orders")
+app.include_router(comment.comment_router, prefix="/comments")
 app.include_router(uploads.updates_router)
 origins = [
     "*"
