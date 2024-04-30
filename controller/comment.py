@@ -48,10 +48,10 @@ async def show_comment_list(pageNow: int = Query(description="页码", gt=0),
 async def good_list_user(
         pageNow: int = Query(description="页码", gt=0),
         pageSize: int = Query(description="每页数量", gt=0),
-        good_id: int = Query(),
+        goods_id: int = Query(),
         user_id=Depends(auth_login)):
     Page = page(pageNow=pageNow, pageSize=pageSize)
-    tn, res = comment_service.show_list_userid(user_id=user_id, good_id=good_id, p=Page)
+    tn, res = comment_service.show_list_userid(user_id=user_id, good_id=goods_id, p=Page)
     return makePageResult(pg=Page, tn=tn, data=res)
 
 
