@@ -55,7 +55,7 @@ async def good_list_user(
     return makePageResult(pg=Page, tn=tn, data=res)
 
 
-@comment_router.get("/change")
+@comment_router.post("/change")
 @standard_response
 async def comment_change(
         new_comment: comment_interface,
