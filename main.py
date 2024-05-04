@@ -90,7 +90,7 @@ async def say_hello(name: str):
 
 
 def main():
-    uvicorn.run(app, host="127.0.0.1", port=8081)
+    uvicorn.run(app, host="127.0.0.1", port=8080)
 
 
 if __name__ == "__main__":
