@@ -8,6 +8,7 @@ from model.db import dbSession, dbSessionread
 from model.user import User
 from model.user import Session as se
 from type.user import login_interface, login_info, user_opt
+from type.page import page, dealDataList
 
 
 def hash_password(password: str) -> str:
@@ -25,6 +26,7 @@ class UserModel(dbSession, dbSessionread):
         print(obj.password)
         with self.get_db() as session:
             obj_add.is_delete = 0
+            obj_add.state = 0
             project = session.query(User).filter(User.username == obj_add.username).first()
             if project is not None:
                 raise HTTPException(status_code=400, detail="Username already registered")
@@ -37,7 +39,8 @@ class UserModel(dbSession, dbSessionread):
         print(obj.password)
         with self.get_db() as session:
             user = session.query(User).filter(User.username == obj.username,
-                                              User.password == obj.password).first()
+                                              User.password == obj.password,
+                                              User.state == 1).first()
             if user is None:
                 raise HTTPException(status_code=401, detail="Incorrect username or password")
             token_current = hash_password(user.username + user.password)
@@ -78,3 +81,25 @@ class UserModel(dbSession, dbSessionread):
                 # print(cuser)
                 # cuser.code = 200
                 return cuser
+
+    def get_user_list_by_state(self, state: int, Page: page, user: int):
+        with self.get_db() as session:
+            queryy = session.query(User).filter(User.id == user, User.role == 2).first()
+            if queryy is None:
+                raise HTTPException(status_code=401, detail="no access")
+            query = session.query(User).filter(User.state == state)
+            total_count = query.count()  # 总共
+            # 执行分页查询
+            data = query.offset(Page.offset()).limit(Page.limit()).all()  # .all()
+            print(type(data))
+            data = dealDataList(data, user_opt, {"is_delete", "password"})
+            return total_count, data
+
+    def update_state_by_user_id(self, user_id: int, new_state: int, user: int):
+        with self.get_db() as session:
+            queryy = session.query(User).filter(User.id == user, User.role == 2).first()
+            if queryy is None:
+                raise HTTPException(status_code=401, detail="no access")
+            query = session.query(User).filter(User.id == user_id).update({"state": new_state})
+            session.commit()
+            return "success"

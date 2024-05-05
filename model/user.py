@@ -20,6 +20,7 @@ class User(Base):  # 用户表
     phone = Column(VARCHAR(32), nullable=False, comment='电话号码')  # 电话号码，非空
     email = Column(VARCHAR(32), comment='邮箱')  # 邮箱
     gender = Column(Integer, comment='性别')  # 性别
+    state = Column(Integer, nullable=False, comment='用户状态')
     is_delete = Column(Integer, nullable=False, comment="是否注销")  # 是否注销
 
 
@@ -29,7 +30,7 @@ class Goods(Base):
     user_id = Column(Integer, nullable=False, comment='商家')  # 主键
     name = Column(VARCHAR(32), nullable=False, comment='商品名称')  # 产品名称
     price = Column(Integer, nullable=False, comment="商品价格")  # 商品价格
-    image_src = Column(VARCHAR(300), nullable=False, unique=True, comment='商品图片路径')  # 商品图片路径，非空，图片存放在服务器端，也就是后端电脑中
+    image_src = Column(VARCHAR(1024), nullable=False, unique=True, comment='商品图片路径')  # 商品图片路径，非空，图片存放在服务器端，也就是后端电脑中
     origin = Column(VARCHAR(64), nullable=False, comment='发货地')
     description = Column(VARCHAR(64), nullable=False, comment='商品描述')
     check_status = Column(Integer, nullable=False, comment='审核状态')  # 审核状态 非空  0 没审核  1 已通过 2 未通过
