@@ -18,9 +18,10 @@ user_service = UserModel()
 
 @goods_router.post("/")
 @standard_response
-async def create_project(request: Request, file: List[UploadFile], origin: str = Query(), description: str = Query(),
+async def create_project(request: Request, file: List[UploadFile], name: str = Query(), origin: str = Query(),
+                         description: str = Query(),
                          user=Depends(auth_login)) -> int:
-    goods = goods_register(name=request.headers['name'],
+    goods = goods_register(name=name,
                            price=int(request.headers['price']),
                            origin=origin,
                            description=description)
@@ -42,7 +43,7 @@ async def show_goods_list(request: Request, pageNow: int = Query(description="�
 @standard_response
 async def good_list_user(request: Request, checkall: bool, user_id=Depends(auth_login),
                          pageNow: int = Query(description="页码", gt=0),
-                         pageSize: int = Query(description="每页数量", gt=0) ):
+                         pageSize: int = Query(description="每页数量", gt=0)):
     Page = page(pageNow=pageNow, pageSize=pageSize)
     tn, res = goods_service.show_list_userid(user_id, checkall, Page)
     return makePageResult(pg=Page, tn=tn, data=res)
@@ -74,4 +75,3 @@ async def delete_goods(request: Request, good_id: int, user_id=Depends(auth_logi
 @standard_response
 async def get_goods_detail(request: Request, good_id: int, user_id=Depends(auth_login)):
     return goods_service.get_good_detail(good_id)
-

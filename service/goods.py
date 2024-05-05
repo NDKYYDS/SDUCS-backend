@@ -37,13 +37,16 @@ def save_upload_files(files: list):
     return uploaded_file_paths
 
 
+base_url = "http://localhost:8000"
+
+
 class GoodsModel(dbSession, dbSessionread):
     def add_goods(self, obj: goods_register, file: List[UploadFile], user: int):  # [http:..，http：..]
         obj_dict = jsonable_encoder(obj)
         obj_add = Goods(**obj_dict)
         image_paths = save_upload_files(file)
         path_list = []
-        base_url = "http://localhost:8000"
+
         for file_path in image_paths:
             # 构建文件链接
             file_name = os.path.basename(file_path)
@@ -75,7 +78,7 @@ class GoodsModel(dbSession, dbSessionread):
     def show_list_userid(self, user_id: int, check_all: bool, Page: page, thestatus=-1):
         with self.get_db() as session:
             query = None
-            if thestatus == -1: # -1  什么都查 0 未审核 1 通过 2未通过
+            if thestatus == -1:  # -1  什么都查 0 未审核 1 通过 2未通过
                 query = session.query(Goods)  # !!!! change
             else:
                 query = session.query(Goods).filter(Goods.check_status == thestatus)

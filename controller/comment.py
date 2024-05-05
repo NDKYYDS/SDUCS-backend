@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Query, Depends
-from flask import Request
 
 from service.comment import CommentModel
 from type.comment import comment_interface
