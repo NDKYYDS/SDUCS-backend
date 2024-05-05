@@ -35,7 +35,7 @@ async def delete_comment(comment_id: int,
 @standard_response
 async def show_comment_list(pageNow: int = Query(description="页码", gt=0),
                             pageSize: int = Query(description="每页数量", gt=0),
-                            goods_id: int = Query()):
+                            goods_id: int = Query(), user_id=Depends(auth_login)):
     print("GYH")
     Page = page(pageNow=pageNow, pageSize=pageSize)
     tn, res = comment_service.show_list(goods_id=goods_id, p=Page)
@@ -58,6 +58,6 @@ async def good_list_user(
 @standard_response
 async def comment_change(
         new_comment: comment_interface,
-        comment_id: int = Query()
+        comment_id: int = Query(), user_id=Depends(auth_login)
 ):
     return comment_service.change_comment(comment_id=comment_id, comment=new_comment)
