@@ -58,7 +58,8 @@ class CommentModel(dbSession, dbSessionread):
     def show_list_userid(self, user_id: int, good_id, p: page):
         with self.get_db() as session:
             query = session.query(Comment).filter(Comment.check_status == 1)
-            query = query.filter(Comment.good_id == good_id and Comment.user_id == user_id)
+            query = query.filter(Comment.good_id == good_id)
+            query = query.filter(Comment.user_id == user_id)
             total_count = query.count()
             # 执行分页查询
             data = query.offset(p.offset()).limit(p.limit()).all()  # .all()
